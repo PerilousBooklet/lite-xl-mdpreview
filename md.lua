@@ -109,7 +109,7 @@ local function linkEscape(str, t)
     if nomatches then externalLinkEscape(str, t) end
 end
 
-local lineDeimiterNames = {['`'] = 'code', ['__'] = 'strong', ['**'] = 'strong', ['_'] = 'em', ['*'] = 'em', ['~~'] = 'strike' }
+local lineDelimiterNames = {['`'] = 'code', ['__'] = 'strong', ['**'] = 'strong', ['_'] = 'em', ['*'] = 'em', ['~~'] = 'strike' }
 local function lineRead(str, start, finish)
     start, finish = start or 1, finish or #str
     local searchIndex = start
@@ -132,7 +132,7 @@ local function lineRead(str, start, finish)
                 }
             else
                 local subtree = lineRead(str, dfinish + 1, nextdstart - 1)
-                subtree.type = lineDeimiterNames[delim]
+                subtree.type = lineDelimiterNames[delim]
                 tree[#tree + 1] = subtree
             end
             searchIndex = nextdfinish + 1

@@ -6,15 +6,13 @@ local keymap = require "core.keymap"
 local md = require "plugins.mdpreview.md"
 
 -- the thing to be inserted before the rendered html
-
 local function script_path()
    local str = debug.getinfo(2, "S").source:sub(2)
    return str:match("(.*/)")
 end
 
 local github_css = "file://" .. script_path() .. "github-markdown.css"
-
- local htmlStart = [[
+local htmlStart = [[
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,17 +43,8 @@ local htmlEnd = [[
 </html>
 ]]
 
---local htmlFragment = md.render([[
---  # Hello
---  Let's try this and see how this goes
---  
---  > all the problems we have with websites are ones we create ourselves. Websites aren't broken by default, they are functional, high-performing, and accessible.
---]])
-
-
 command.add("core.docview", {
   ["mdpreview:show-preview"] = function()
-  
     -- getting the markdown material
     local dv = core.active_view
     local mdSource = dv.doc:get_text(1, 1, math.huge, math.huge)
@@ -66,27 +55,21 @@ command.add("core.docview", {
       core.error("mdpreview has a problem with your markdown file! details are as follows: " .. err)
       return
     end
-    
     -- writing the html content to a temporary file
-    
     local htmlfile = core.temp_filename(".html")
     local fp = io.open(htmlfile, "w")
     fp:write(realhtmlStart)
     fp:write(htmlFragment)
     fp:write(htmlEnd)
     fp:close()
-    
     -- opening markdown preview (duh)
-
     core.log("Opening markdown preview...")
     if PLATFORM == "Windows" then
       system.exec("start " .. htmlfile)
     else
       system.exec(string.format("xdg-open %q", htmlfile))
     end
-    
     -- deleting the temporary file
-
     core.add_thread(function()
       coroutine.yield(5)
       os.remove(htmlfile)
@@ -97,5 +80,3 @@ command.add("core.docview", {
 keymap.add {
   ["ctrl+shift+v"] = "mdpreview:show-preview",
 }
-
--- core.log("this plugin works!")
